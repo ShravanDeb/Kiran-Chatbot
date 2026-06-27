@@ -381,12 +381,22 @@ npm run preview
 
 ---
 
+## 👨‍💻 About the Developer & Motivation
+
+This project was built by **Shravan Kumar Deb**, a 3rd-semester B.Tech student in Computer Science Engineering (Specialization in Artificial Intelligence) at **Assam Science and Technology University (ASTU)**.
+
+The chatbot was developed during a social internship at the **Mrinaljyoti Rehabilitation Centre (MRC)**. It was an independent initiative — not an academic requirement, nor something requested or demanded by the NGO. I built it solely because I saw a genuine need for accessible AI support for the families MRC serves, and I wanted to use the opportunity to enhance my technical skills and demonstrate practical knowledge of my field.
+
+The project is fully open-source. You are welcome to use, copy, modify, or build on it according to your specific requirements.
+
+---
+
 ## 📜 License
 
 Distributed under the **MIT License**.
 See [`LICENSE`](./LICENSE) for full terms.
 
-Copyright © 2025 [Mrinaljyoti Rehabilitation Centre (MRC)](https://mrinaljyotiassam.org)
+Copyright © 2025 Shravan Kumar Deb & Mrinaljyoti Rehabilitation Centre (MRC)
 
 Kiran is free and open source. You are welcome to use, copy, modify, or build on this project for any purpose — just keep the copyright notice.
 
