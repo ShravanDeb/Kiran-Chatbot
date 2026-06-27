@@ -383,7 +383,12 @@ npm run preview
 
 ## 📜 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the **MIT License**.
+See [`LICENSE`](./LICENSE) for full terms.
+
+Copyright © 2025 [Mrinaljyoti Rehabilitation Centre (MRC)](https://mrinaljyotiassam.org)
+
+Kiran is free and open source. You are welcome to use, copy, modify, or build on this project for any purpose — just keep the copyright notice.
 
 ---
 
