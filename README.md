@@ -396,7 +396,7 @@ The project is fully open-source. You are welcome to use, copy, modify, or build
 Distributed under the **MIT License**.
 See [`LICENSE`](./LICENSE) for full terms.
 
-Copyright © 2026 Shravan Kumar Deb & Mrinaljyoti Rehabilitation Centre (MRC)
+Copyright © 2026 Shravan Kumar Deb
 
 Kiran is free and open source. You are welcome to use, copy, modify, or build on this project for any purpose — just keep the copyright notice.
 
