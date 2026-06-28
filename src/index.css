@@ -1278,7 +1278,7 @@ html:lang(as) .input-textarea {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 130px;
+    max-width: 190px;
   }
 
   .nav-brand-title {
