@@ -226,6 +226,16 @@ body {
   border-color: #7A2433;
 }
 
+/* ===== DARK MODE — MOBILE OVERRIDES ===== */
+[data-theme="dark"] .input-area {
+  background: rgba(12, 8, 9, 0.95);
+}
+
+[data-theme="dark"] .lang-bar-mobile {
+  background: rgba(12, 8, 9, 0.82);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
 /* ===== HIGH CONTRAST OVERLAY — LIGHT MODE ===== */
 html.high-contrast:not([data-theme="dark"]) body {
   background: #FFFFFF !important;
@@ -666,6 +676,11 @@ html.high-contrast .message-markdown a {
   height: 4px;
   border-radius: 50%;
   background: var(--color-maroon);
+}
+
+/* ===== MOBILE LANGUAGE BAR ===== */
+.lang-bar-mobile {
+  display: none;
 }
 
 /* ===== MESSAGE LIST ===== */
@@ -1214,8 +1229,26 @@ html:lang(as) .input-textarea {
 /* ===== MOBILE ===== */
 @media (max-width: 767px) {
   .navbar {
-    padding: 0 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 200;
     height: 56px;
+    padding: 0 12px;
+    padding-top: env(safe-area-inset-top);
+    background: rgba(247, 242, 234, 0.97);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .app {
+    padding-top: 56px;
+  }
+
+  .lang-pill-group {
+    display: none;
   }
 
   .nav-brand-tagline {
@@ -1227,8 +1260,9 @@ html:lang(as) .input-textarea {
   }
 
   .lang-segment {
-    padding: 5px 10px;
-    font-size: 0.733rem;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
   }
 
   .nav-icon-row {
@@ -1247,7 +1281,7 @@ html:lang(as) .input-textarea {
   }
 
   .message-list {
-    padding: 0.8rem 0.5rem;
+    padding: 0.5rem 0.5rem 90px;
   }
 
   .message-row {
@@ -1264,19 +1298,29 @@ html:lang(as) .input-textarea {
   }
 
   .welcome-card {
-    padding: 1rem 0.5rem;
+    padding: 0.5rem 0.5rem;
+    justify-content: center;
+    align-items: center;
   }
 
   .welcome-card-inner {
-    padding: 1.867rem 1.333rem;
+    padding: 1.6rem 1.2rem;
+    width: 92%;
+    max-width: 100%;
+  }
+
+  .welcome-avatar img {
+    width: 64px;
+    height: 64px;
   }
 
   .welcome-title {
-    font-size: 1.467rem;
+    font-size: 1.4rem;
   }
 
   .welcome-subtitle {
-    font-size: 0.933rem;
+    font-size: 0.9rem;
+    margin-top: 6px;
   }
 
   .input-bar-wrapper {
@@ -1302,7 +1346,29 @@ html:lang(as) .input-textarea {
   }
 
   .input-area {
-    padding-bottom: 0.533rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 198;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    background: rgba(247, 242, 234, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .lang-bar-mobile {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(247, 242, 234, 0.97);
+    border-bottom: 1px solid rgba(122, 36, 51, 0.10);
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 100%;
+    z-index: 199;
   }
 
   .chips-scroll {
