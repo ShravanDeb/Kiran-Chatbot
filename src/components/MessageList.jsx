@@ -50,7 +50,9 @@ export default function MessageList({
 
   const isEmpty = messages.length === 0;
 
-  const messagesToShow = showThinking
+  const lastMsg = messages[messages.length - 1];
+  const hasEmptyAssistant = lastMsg?.role === 'assistant' && !lastMsg.content;
+  const messagesToShow = showThinking && hasEmptyAssistant
     ? messages.slice(0, -1)
     : messages;
 

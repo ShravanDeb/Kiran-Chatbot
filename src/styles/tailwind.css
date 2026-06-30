@@ -41,6 +41,7 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .skip-link {
@@ -973,8 +974,9 @@ a:focus-visible {
     background: rgba(12,8,9,0.92);
   }
   .header-row1 {
-    height: 52px;
+    height: 60px;
     padding: 0 12px;
+    padding-top: env(safe-area-inset-top);
     width: 100%;
   }
   .header-row2 {
@@ -1014,7 +1016,7 @@ a:focus-visible {
 
   .chat-layout { padding-top: 0; }
   .msg-list {
-    padding: 0.4rem 0.5rem 120px;
+    padding: 0.4rem 0.5rem 180px;
     display: flex;
     flex-direction: column;
   }
