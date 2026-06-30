@@ -684,8 +684,6 @@ html.high-contrast .message-markdown a {
   overflow-x: hidden;
   padding: 1.6rem 1rem;
   scroll-behavior: smooth;
-  min-height: 0;
-  min-width: 0;
 }
 
 .message-list-inner {
@@ -1312,6 +1310,7 @@ html:lang(as) .input-textarea {
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
   }
 
   .welcome-card {
