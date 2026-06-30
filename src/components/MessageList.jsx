@@ -90,7 +90,7 @@ export default function MessageList({
             )}
           </>
         )}
-        <div ref={bottomRef} className="scroll-anchor" style={{ height: '200px' }} />
+        <div ref={bottomRef} className="scroll-anchor" />
       </div>
 
       {userScrolledUp && (
