@@ -85,7 +85,7 @@ This project was born from an observation, not an assignment. I would first like
 
 I am grateful to the **Mrinaljyoti Rehabilitation Centre (MRC)** and the children and families they serve. Although they did not commission this project, their work inspired it. The dedication of MRC's staff — the "aunties and uncles" who work tirelessly with limited resources — demonstrated that technology, when thoughtfully applied, can amplify human compassion.
 
-I thank the open-source communities whose work made this project possible: **React** (Meta), **Vite** (Evan You and contributors), **Tailwind CSS** (Adam Wathan and contributors), and the **Lucide** icon project. Their commitment to free, high-quality tooling enabled a student developer to build a production-ready application at zero cost.
+I thank the open-source communities whose work made this project possible: **React** (Meta), **Next.js** (Vercel), **Tailwind CSS** (Adam Wathan and contributors), and the **Lucide** icon project. Their commitment to free, high-quality tooling enabled a student developer to build a production-ready application at zero cost.
 
 I am grateful to **NVIDIA**, **Groq**, **OpenRouter**, and **Mistral AI** for providing free-tier API access to their language models. Without their generosity in offering developer-friendly AI infrastructure, a project of this nature would not have been financially feasible for an independent student developer.
 
@@ -97,7 +97,7 @@ Finally, I thank my family for their patience and support during the long hours 
 
 ## ABSTRACT
 
-Families of children with intellectual disabilities, cerebral palsy, autism, ADHD, and hearing-speech impairments in Assam face significant barriers in accessing timely and accurate information about available support services. Mrinaljyoti Rehabilitation Centre (MRC), a non-profit organization serving over 140 special children across Upper Assam, operates with a small staff of approximately seven members and limited office hours. No digital support tool previously existed in the regional languages of Hindi and Assamese to bridge this gap. **Kiran — AI Helpline Chatbot** is a production-ready, fully open-source web application that addresses this problem through a warm, child-like conversational AI persona capable of understanding and responding in English, Hindi, and Assamese. Built entirely as a self-initiated project — not assigned by any academic institution or commissioned by the NGO — the chatbot integrates four AI language model providers (NVIDIA Nemotron-3-Ultra, Groq Llama-3.3-70B, OpenRouter GPT-4o-mini, and Mistral Small) with automatic failover, ensuring high availability at zero cost. Key technical achievements include token-by-token streaming via Server-Sent Events for responsive user experience, Unicode-range-based language auto-detection, a glassmorphism UI with dark mode and independent high-contrast overlay, font scaling for low-vision users, speech input/output via the Web Speech API, per-IP rate limiting without a database, and a comprehensive accessibility implementation targeting WCAG 2.1 guidelines. The frontend is built with React 19 and Vite 8, styled with Tailwind CSS v4, and deployed as a Vercel serverless function — entirely free to operate. The project demonstrates that a single student developer, using only free-tier resources, can deliver a socially impactful, production-grade AI application. The chatbot is now available for MRC to adopt and share with the families it serves, with no ongoing costs beyond optional domain registration.
+Families of children with intellectual disabilities, cerebral palsy, autism, ADHD, and hearing-speech impairments in Assam face significant barriers in accessing timely and accurate information about available support services. Mrinaljyoti Rehabilitation Centre (MRC), a non-profit organization serving over 140 special children across Upper Assam, operates with a small staff of approximately seven members and limited office hours. No digital support tool previously existed in the regional languages of Hindi and Assamese to bridge this gap. **Kiran — AI Helpline Chatbot** is a production-ready, fully open-source web application that addresses this problem through a warm, child-like conversational AI persona capable of understanding and responding in English, Hindi, and Assamese. Built entirely as a self-initiated project — not assigned by any academic institution or commissioned by the NGO — the chatbot integrates four AI language model providers (NVIDIA Nemotron-3-Ultra, Groq Llama-3.3-70B, OpenRouter GPT-4o-mini, and Mistral Small) with automatic failover, ensuring high availability at zero cost. Key technical achievements include token-by-token streaming via Server-Sent Events for responsive user experience, Unicode-range-based language auto-detection, a glassmorphism UI with dark mode and independent high-contrast overlay, font scaling for low-vision users, speech input/output via the Web Speech API, per-IP rate limiting without a database, and a comprehensive accessibility implementation targeting WCAG 2.1 guidelines. The frontend is built with Next.js 15 (React 19), styled with Tailwind CSS v3, and deployed on Vercel — entirely free to operate. The project demonstrates that a single student developer, using only free-tier resources, can deliver a socially impactful, production-grade AI application. The chatbot is now available for MRC to adopt and share with the families it serves, with no ongoing costs beyond optional domain registration.
 
 ---
 
@@ -349,13 +349,13 @@ Kiran draws technical inspiration from these systems while addressing their gaps
 
 ### 4.1 System Architecture Overview
 
-Kiran follows a modern serverless SPA architecture. The frontend is a React 19 single-page application served via Vercel's global CDN. The backend is a single Vercel serverless function that acts as a proxy between the frontend and four external AI provider APIs. The architecture is intentionally simple — no database, no authentication system, no message queue — because the NGO has zero budget for infrastructure and the privacy-first design intentionally avoids storing user data.
+Kiran uses the **Next.js 15 App Router** architecture, blending server-rendered pages with client-side interactivity. Pages are rendered on Vercel's Edge Network via React Server Components (RSC), while the interactive chat interface runs as a `'use client'` component. The backend is a single Next.js API Route (`src/app/api/chat/route.ts`) that acts as a proxy between the frontend and four external AI provider APIs. The architecture is intentionally simple — no database, no authentication system, no message queue — because the NGO has zero budget for infrastructure and the privacy-first design intentionally avoids storing user data.
 
 ```mermaid
 graph TD
-    A[User Browser] -->|HTTPS| B[Vercel CDN]
-    B --> C[React 19 SPA]
-    C -->|POST /api/chat| D[Vercel Serverless Function]
+    A[User Browser] -->|HTTPS| B[Vercel Edge Network]
+    B --> C[Next.js 15 App]
+    C -->|POST /api/chat| D[Next.js API Route]
     D -->|Try 1| E[NVIDIA Nemotron-3-Ultra]
     D -->|Try 2 on failure| F[Groq Llama-3.3-70B]
     D -->|Try 3 on failure| G[OpenRouter GPT-4o-mini]
@@ -369,16 +369,18 @@ graph TD
 
 #### 4.2.1 Component Hierarchy
 
-The React component tree is flat and intentionally minimal — six components with no nesting beyond one level:
+The component tree follows the Next.js App Router convention with a server component root, one client wrapper, and five leaf components:
 
 ```
-App.jsx
-├── Header.jsx            — Navbar with language pill, theme/contrast/font controls
-├── MessageList.jsx       — Scrollable message area, welcome card, thinking indicator
-│   ├── ChatMessage.jsx   — Individual message bubble (user or assistant)
-│   └── KiranThinking.jsx — Two-phase "Kiran is thinking" animation
-├── InputBar.jsx          — Glassmorphism pill input with mic + send
-└── SuggestedChips.jsx    — Horizontal scrollable chip strip
+layout.tsx (Server — fonts, metadata, FOUC script)
+└── page.tsx (Server — renders ChatInterface)
+    └── ChatInterface.jsx ('use client' — state, hooks, skip nav)
+        ├── Header.jsx            — Navbar with language pill, theme/contrast/font controls
+        ├── MessageList.jsx       — Scrollable message area, welcome card, thinking indicator
+        │   ├── ChatMessage.jsx   — Individual message bubble (user or assistant)
+        │   └── KiranThinking.jsx — Two-phase "Kiran is thinking" animation
+        ├── InputBar.jsx          — Glassmorphism pill input with mic + send
+        └── SuggestedChips.jsx    — Horizontal scrollable chip strip
 ```
 
 Each component has a single responsibility: **Header** manages the navigation bar and all toggle controls; **MessageList** manages scroll behaviour, auto-scrolling, and delegates rendering to child components; **ChatMessage** renders individual message bubbles with Markdown support and action buttons; **KiranThinking** shows the animated thinking indicator with a two-phase transition; **InputBar** handles text input with auto-sizing textarea, voice button, and send button; **SuggestedChips** renders the clickable question chips filtered by language.
@@ -389,9 +391,9 @@ Four custom hooks encapsulate all stateful logic:
 
 **useChat.js (199 lines)** — Manages the entire chat lifecycle: sending messages, receiving SSE streams, parsing tokens, handling errors, managing abort on new chat, and the 1.2-second minimum thinking timer. Returns `{ messages, isLoading, isStreaming, isThinking, sendMessage, clearChat }`.
 
-**useTheme.js (30 lines)** — Manages dark mode toggle. Reads initial state from localStorage (`kiran-theme`), falls back to `prefers-color-scheme: dark` media query on first visit. Applies `data-theme="dark"` attribute on `<html>`. Returns `{ isDark, toggleTheme }`.
+**useTheme.js (30 lines)** — Manages dark mode toggle. Reads initial state from localStorage (`kiran-theme`), falls back to `prefers-color-scheme: dark` media query on first visit. Applies `.dark` class on `<html>`. Returns `{ isDark, toggleTheme }`.
 
-**useAccessibility.js (53 lines)** — Manages high contrast mode and font size. Stores states in localStorage (`kiran-high-contrast`, `kiran-font-size`). High contrast toggles `html.high-contrast` class. Font size cycles 15px → 18px → 21px via `document.documentElement.style.fontSize`. Returns `{ highContrast, toggleHighContrast, fontSize, cycleFontSize }`.
+**useAccessibility.js (53 lines)** — Manages high contrast mode and font size. Stores states in localStorage (`kiran-hc`, `kiran-fs`). High contrast toggles `.hc` class on `<html>`. Font size cycles 15px → 18px → 21px via `.fs-1`/`.fs-2`/`.fs-3` classes. Returns `{ highContrast, toggleHighContrast, fontSize, cycleFontSize }`.
 
 **useSpeech.js (142 lines)** — Manages Text-to-Speech (speech synthesis) and Speech-to-Text (speech recognition). Creates fresh SpeechRecognition instance per `startListening()` call (required by Chrome). Blocks TTS for Assamese. Returns `{ speak, stopSpeaking, isSpeaking, speakingText, isListening, toggleListening, hasSpeechRecognition }`.
 
@@ -407,13 +409,13 @@ The project deliberately avoids global state management libraries (Redux, Zustan
 
 **Persisted state** — Three pieces of state persist across sessions via `localStorage`: theme (`kiran-theme`), high contrast (`kiran-high-contrast`), and font size (`kiran-font-size`).
 
-A global state manager was unnecessary because there is no deeply nested state sharing. The component tree is flat (only one level deep), and all shared state is passed as props from `App.jsx`. The total number of state variables is small (approximately 15). Adding Redux or Zustand would have increased bundle size and complexity without measurable benefit.
+A global state manager was unnecessary because there is no deeply nested state sharing. The component tree is flat (only one level deep), and all shared state is passed as props from `ChatInterface.jsx`. The total number of state variables is small (approximately 15). Adding Redux or Zustand would have increased bundle size and complexity without measurable benefit.
 
 ### 4.3 Backend Architecture
 
-#### 4.3.1 Vercel Serverless Function
+#### 4.3.1 Next.js API Route
 
-The backend consists of a single file, `api/chat.js` (380 lines), deployed as a Vercel serverless function. Serverless was chosen because it eliminates server management entirely — Vercel handles scaling, SSL, and global distribution automatically. This is critical for an NGO with zero IT budget: there are no servers to maintain, no uptime to monitor, and no hosting bills. The function is invoked only when a user sends a message, and Vercel's free tier includes 100 GB of bandwidth and 100 GB-hours of compute monthly, which is more than sufficient for MRC's expected usage.
+The backend consists of a single file, `src/app/api/chat/route.ts` (380 lines), implemented as a Next.js API Route within the App Router. API Routes run as serverless functions on Vercel, eliminating server management entirely — Vercel handles scaling, SSL, and global distribution automatically. This is critical for an NGO with zero IT budget: there are no servers to maintain, no uptime to monitor, and no hosting bills. The route is invoked only when a user sends a message, and Vercel's free tier includes 100 GB of bandwidth and 100 GB-hours of compute monthly, which is more than sufficient for MRC's expected usage.
 
 Request handling follows this sequence:
 1. Rate limit check (per-IP sliding window)
@@ -516,7 +518,7 @@ A total of 22 custom properties define the complete design vocabulary. Every com
 
 #### 4.6.3 Responsive Design
 
-Three breakpoints are defined in `src/index.css`:
+Three breakpoints are defined in `src/styles/tailwind.css`:
 
 | Breakpoint | Changes |
 |------------|---------|
@@ -528,7 +530,7 @@ The layout uses a CSS Grid navbar (`grid-template-columns: 1fr auto 1fr`) with `
 
 #### 4.6.4 Dark Mode Implementation
 
-Dark mode uses a `data-theme="dark"` attribute on the `<html>` element, toggled by the `useTheme` hook. This approach was chosen over a separate `.dark` class or CSS file because attribute selectors (`[data-theme="dark"]`) provide clear visual grouping in the stylesheet and are semantically meaningful.
+Dark mode uses a `.dark` class on the `<html>` element, toggled by the `useTheme` hook. This class-based approach was chosen over a `data-theme` attribute or inline styles because it is compatible with Next.js server-side rendering — the class is applied before React hydrates via an inline FOUC-prevention `<script>` in `layout.tsx` that reads `localStorage` directly.
 
 The dark mode palette uses a warm near-black (`#0C0809`) with a subtle maroon radial gradient at the top, rather than the cold pure black common in many dark themes. Glass surfaces use `rgba(255, 255, 255, 0.04)` backgrounds with `rgba(255, 255, 255, 0.09)` borders — warm enough to feel intentional but transparent enough to show the background gradient. User message bubbles shift to `#A83348` (a lighter maroon). The brand title gains a `text-shadow: 0 0 20px rgba(122, 36, 51, 0.40)` for a subtle glow effect.
 
@@ -536,7 +538,7 @@ The implementation checks `prefers-color-scheme: dark` as the initial default bu
 
 #### 4.6.5 High Contrast Mode
 
-High contrast mode is implemented as an independent overlay class (`html.high-contrast`) that works on top of either light or dark mode. It is toggled via the `useAccessibility` hook and persisted to localStorage as `kiran-high-contrast`.
+High contrast mode is implemented as an independent overlay class (`.hc` on `<html>`) that works on top of either light or dark mode. It is toggled via the `useAccessibility` hook and persisted to localStorage as `kiran-hc`.
 
 When active, high contrast mode:
 - Sets backgrounds to pure white (light) or pure black (dark)
@@ -552,7 +554,7 @@ This was implemented as a separate overlay rather than a theme variant because i
 
 Three font sizes are available: Normal (15px root), Large (18px root), and Extra Large (21px root). All CSS sizes in the stylesheet are expressed in `rem` units, so changing the root font size proportionally scales every element — buttons, inputs, margins, padding — not just text.
 
-The font size is set via `document.documentElement.style.fontSize` and persisted in localStorage as `kiran-font-size`. Cycling through sizes is implemented as a three-state cycle: `normal → large → xlarge → normal`.
+The font size is set via `.fs-1`/`.fs-2`/`.fs-3` classes on `<html>` and persisted in localStorage as `kiran-fs`. Class-based scaling was chosen over `document.documentElement.style.fontSize` for SSR compatibility — the inline FOUC-prevention `<script>` in `layout.tsx` reads `localStorage` and applies the class before React hydrates. Cycling through sizes is implemented as a three-state cycle: `normal → large → xlarge → normal`.
 
 The current size is visually indicated by dots underneath the font type button: 0 dots for normal, 1 dot for large, 2 dots for xlarge.
 

@@ -969,6 +969,9 @@ a:focus-visible {
     -webkit-backdrop-filter: var(--blur-lg);
     border-bottom: none;
   }
+  .dark .kiran-header {
+    background: rgba(12,8,9,0.92);
+  }
   .header-row1 {
     height: 52px;
     padding: 0 12px;
@@ -1043,6 +1046,9 @@ a:focus-visible {
     background: rgba(247,242,234,0.95);
     backdrop-filter: var(--blur-md);
     -webkit-backdrop-filter: var(--blur-md);
+  }
+  .dark .input-area {
+    background: rgba(12,8,9,0.92);
   }
 
   .chips-scroll { padding: 0.4rem 0.5rem 0.267rem; }
