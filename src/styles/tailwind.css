@@ -1017,9 +1017,6 @@ a:focus-visible {
   .chat-layout { padding-top: 0; }
   .msg-list {
     padding: 0.4rem 0.5rem;
-    /* Push content above the fixed input-area so the last message's
-       Listen / Copy buttons are never hidden behind it. */
-    padding-bottom: calc(var(--input-area-height, 140px) + 24px);
     display: flex;
     flex-direction: column;
   }
@@ -1027,12 +1024,6 @@ a:focus-visible {
     display: flex;
     flex-direction: column;
     min-height: 100%;
-  }
-  .scroll-anchor {
-    /* Tiny sentinel used only as the scrollIntoView target.
-       Clearance is handled by .msg-list padding-bottom above. */
-    height: 1px;
-    flex-shrink: 0;
   }
   .welcome-card { padding: 0.5rem 0.5rem; }
   .welcome-card-inner { padding: 1.5rem 1.2rem; width: 92%; }
@@ -1047,11 +1038,9 @@ a:focus-visible {
   .mic-btn { width: 44px; height: 44px; }
 
   .input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 198;
+    /* Stay in flex flow so msg-list ends exactly where we begin — no overlap. */
+    flex-shrink: 0;
+    z-index: 40;
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
     background: rgba(247,242,234,0.95);
     backdrop-filter: var(--blur-md);
