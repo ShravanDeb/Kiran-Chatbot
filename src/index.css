@@ -489,6 +489,25 @@ html.high-contrast .message-markdown a {
   text-decoration: underline;
 }
 
+/* ===== SKIP LINK ===== */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: var(--color-maroon);
+  color: #F7F2EA;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 8px 8px;
+  z-index: 9999;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -691,6 +710,7 @@ html.high-contrast .message-markdown a {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   min-height: 100%;
 }
 
@@ -764,7 +784,7 @@ html.high-contrast .message-markdown a {
   gap: 10px;
   padding: 0.533rem 0;
   align-items: flex-start;
-  animation: fadeSlideIn 0.2s ease-out;
+  animation: fadeSlideIn 0.2s ease-out both;
 }
 
 .message-row-user {
@@ -926,6 +946,38 @@ html.high-contrast .message-markdown a {
   margin-top: 4px;
   font-weight: 400;
   letter-spacing: 0.02em;
+}
+
+/* ===== SCROLL TO BOTTOM ===== */
+.scroll-to-bottom-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--color-maroon);
+  color: var(--color-cream);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(122, 36, 51, 0.3);
+  z-index: 20;
+  transition: all 150ms ease;
+  outline: none;
+  animation: fadeSlideIn 0.2s ease-out both;
+}
+
+.scroll-to-bottom-btn:hover {
+  transform: scale(1.08);
+  background: var(--color-maroon-dark);
+}
+
+.scroll-to-bottom-btn:focus-visible {
+  outline: 2px solid var(--color-maroon);
+  outline-offset: 2px;
 }
 
 /* ===== KIRAN THINKING ===== */
