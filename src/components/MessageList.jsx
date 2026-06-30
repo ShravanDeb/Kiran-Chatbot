@@ -13,6 +13,7 @@ export default function MessageList({
 }) {
   const bottomRef = useRef(null);
   const containerRef = useRef(null);
+  const prevMsgLenRef = useRef(messages.length);
   const [userScrolledUp, setUserScrolledUp] = useState(false);
   const [showThinking, setShowThinking] = useState(false);
 
@@ -26,11 +27,13 @@ export default function MessageList({
     }
   }, [isThinking, showThinking]);
 
+  const hasNewMessage = messages.length > prevMsgLenRef.current;
   useEffect(() => {
     if (!userScrolledUp && bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+      bottomRef.current.scrollIntoView({ behavior: hasNewMessage ? 'smooth' : 'auto' });
     }
-  }, [messages, isLoading, userScrolledUp]);
+    prevMsgLenRef.current = messages.length;
+  }, [messages, isLoading, userScrolledUp, hasNewMessage]);
 
   const handleScroll = () => {
     const container = containerRef.current;
