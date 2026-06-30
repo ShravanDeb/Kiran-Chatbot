@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import Header from './components/Header';
-import MessageList from './components/MessageList';
-import InputBar from './components/InputBar';
-import SuggestedChips from './components/SuggestedChips';
-import { useChat } from './hooks/useChat';
-import { useTheme } from './hooks/useTheme';
-import { useAccessibility } from './hooks/useAccessibility';
+'use client';
 
-export default function App() {
+import { useState, useEffect } from 'react';
+import Header from './Header';
+import MessageList from './MessageList';
+import InputBar from './InputBar';
+import SuggestedChips from './SuggestedChips';
+import { useChat } from '../hooks/useChat';
+import { useTheme } from '../hooks/useTheme';
+import { useAccessibility } from '../hooks/useAccessibility';
+import { SkipNavLink, SkipNavContent } from './SkipNav';
+
+export default function ChatInterface() {
   const [language, setLanguage] = useState('en');
   const [inputText, setInputText] = useState('');
   const { isDark, toggleTheme } = useTheme();
@@ -24,7 +27,8 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <div className="chat-layout">
+      <SkipNavLink />
       <Header
         language={language}
         onLanguageChange={setLanguage}
@@ -36,6 +40,7 @@ export default function App() {
         fontSize={fontSize}
         onCycleFontSize={cycleFontSize}
       />
+      <SkipNavContent />
       <MessageList
         messages={messages}
         isLoading={isLoading}

@@ -16,10 +16,10 @@ export function useTheme() {
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
-      root.setAttribute('data-theme', 'dark');
+      root.classList.add('dark');
       localStorage.setItem(STORAGE_KEY, 'dark');
     } else {
-      root.removeAttribute('data-theme');
+      root.classList.remove('dark');
       localStorage.setItem(STORAGE_KEY, 'light');
     }
   }, [isDark]);

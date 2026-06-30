@@ -35,22 +35,22 @@ export default function ChatMessage({ message, language }) {
   };
 
   return (
-    <div className={`message-row ${isUser ? 'message-row-user' : 'message-row-assistant'}`}>
+    <div className={`msg-row ${isUser ? 'user' : 'assistant'}`}>
       {!isUser && (
-        <div className="message-avatar message-avatar-assistant">
+        <div className="msg-avatar">
           <img src="/logo.svg" alt="Kiran" />
         </div>
       )}
 
-      <div className="message-content">
+      <div className="msg-content">
         {isUser ? (
-          <div className="message-bubble">
-            <p className="message-text">{message.content}</p>
+          <div className="bubble user">
+            <p className="msg-text">{message.content}</p>
           </div>
         ) : (
-          <div className="message-bubble">
+          <div className="bubble assistant">
             {message.content ? (
-              <div className="message-markdown">
+              <div className="msg-markdown">
                 <ReactMarkdown>{message.content}</ReactMarkdown>
               </div>
             ) : (
@@ -60,9 +60,9 @@ export default function ChatMessage({ message, language }) {
         )}
 
         {!isUser && message.content && (
-          <div className="message-actions">
+          <div className="msg-actions">
             <button
-              className={`action-btn ${isCurrentlySpeaking ? 'active' : ''}`}
+              className={`action-pill ${isCurrentlySpeaking ? 'active' : ''}`}
               onClick={handleListen}
               aria-label="Listen to message"
               title="Listen to message"
@@ -71,7 +71,7 @@ export default function ChatMessage({ message, language }) {
               <span>Listen</span>
             </button>
             <button
-              className="action-btn"
+              className="action-pill"
               onClick={handleCopy}
               aria-label={t('aria.copyMessage', language)}
               title={copied ? t('button.copied', language) : t('button.copy', language)}
@@ -82,7 +82,7 @@ export default function ChatMessage({ message, language }) {
           </div>
         )}
         {!isUser && message.provider && (
-          <div className="message-provider">via {message.provider}</div>
+          <div className="msg-meta">via {message.provider}</div>
         )}
       </div>
     </div>

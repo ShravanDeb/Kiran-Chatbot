@@ -10,8 +10,8 @@
   <p>
     <img src="https://img.shields.io/badge/JavaScript-ES2024-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
     <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
-    <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
-    <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+    <img src="https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
     <img src="https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   </p>
 
@@ -80,8 +80,8 @@
 | 🌊 **Streaming SSE Responses** | Token-by-token streaming via Server-Sent Events; "Kiran is thinking" animation with minimum 1.2s display for perceived responsiveness |
 | 🎨 **Glassmorphism Design** | Warm cream/ink palette (`#F7F2EA` / `#2A1F1A`), maroon accent (`#7A2433`), `backdrop-filter` blur surfaces on header, input bar, chips, cards |
 | 🌙 **Dark Mode** | Near-black `#0C0809` with subtle maroon radial glow; frosted dark glass cards; persisted via `localStorage` (`kiran-theme`) |
-| 🔆 **High Contrast Overlay** | Independent of theme — pure black/white, 2px borders, no blur/shadow; `html.high-contrast` class, persisted (`kiran-high-contrast`) |
-| 🔠 **Font Scaling** | Three sizes: 15px / 18px / 21px; sets `document.documentElement.style.fontSize` (all CSS in `rem`), persisted (`kiran-font-size`) |
+| 🔆 **High Contrast Overlay** | Independent of theme — pure black/white, 2px borders, no blur/shadow; `.hc` class on `<html>`, persisted (`kiran-hc`) |
+| 🔠 **Font Scaling** | Three sizes: 15px / 18px / 21px; `.fs-1`/`.fs-2`/`.fs-3` classes on `<html>`, persisted (`kiran-fs`) |
 | 🗣️ **Speech I/O** | TTS: Web Speech API with Neural voice preference (EN/HI only, Assamese disabled). STT: Continuous recognition (`en-IN`, `hi-IN`, `as-IN`) |
 | 🛡️ **Rate Limiting** | Per-IP sliding window: 10 requests/minute; in-memory `Map` with 5-min cleanup; returns `429 { limitReached: true }` |
 | ♿ **Full Accessibility** | Skip link, ARIA roles on pills/buttons, focus-visible outlines, `prefers-reduced-motion`, touch targets ≥44px on mobile |
@@ -93,14 +93,14 @@
 
 **Frontend**
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Lucide React](https://img.shields.io/badge/Lucide_React-latest-F56565?style=for-the-badge&logo=lucide&logoColor=white)
 ![React Markdown](https://img.shields.io/badge/React_Markdown-10-61DAFB?style=for-the-badge&logo=markdown&logoColor=white)
 
 **Backend / AI**
 ![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Vercel Functions](https://img.shields.io/badge/Vercel_Functions-Serverless-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Next.js API Routes](https://img.shields.io/badge/Next.js_API_Routes-App_Router-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-GPT--4o--mini-7C3AED?style=for-the-badge&logo=openai&logoColor=white)
 ![Groq](https://img.shields.io/badge/Groq-Llama--3.3--70B-F55036?style=for-the-badge&logo=groq&logoColor=white)
 ![Mistral](https://img.shields.io/badge/Mistral-Small-0047AB?style=for-the-badge&logo=mistral&logoColor=white)
@@ -130,7 +130,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **http://localhost:3000** in your browser.
 
 ---
 
@@ -168,22 +168,22 @@ MISTRAL_API_KEY=your_mistral_key
 
 ## 🔧 Configuration
 
-### Vite Config (`vite.config.js`)
+### Next.js Config (`next.config.mjs`)
 
-- **Dev proxy** for `/api/chat` → local Vercel function handler
-- **Env loading** without `VITE_` prefix (all keys loaded via `loadEnv(mode, cwd, '')`)
-- **Tailwind CSS v4** via `@tailwindcss/vite` plugin
+- **App Router** with server components by default
+- **API Routes** at `src/app/api/chat/route.ts` — supports streaming SSE responses
+- **PostCSS + Tailwind v3** via `postcss.config.mjs` + `tailwind.config.js`
 
-### Tailwind CSS v4 (`src/index.css`)
+### Tailwind CSS v3 (`src/styles/tailwind.css` + `globals.css`)
 
-Design tokens defined in `:root`:
+Design tokens defined in `:root` via CSS custom properties:
 ```css
 :root {
   --color-maroon: #7A2433;
   --color-cream: #F7F2EA;
-  --font-latin: 'Nunito', sans-serif;
-  --font-hindi: 'Baloo 2', sans-serif;
-  --font-assamese: 'Baloo Da 2', sans-serif;
+  --font-nunito: Nunito, sans-serif;
+  --font-baloo2: 'Baloo 2', sans-serif;
+  --font-baloo-da2: 'Baloo Da 2', sans-serif;
   /* ...glassmorphism tokens... */
 }
 ```
@@ -241,31 +241,39 @@ Clicking a chip sends it instantly. Chips filter by detected input language.
 
 ```
 kiran-chatbot/
-├── api/
-│   └── chat.js              # Vercel serverless function — 4-provider streaming SSE
 ├── public/
-│   └── logo.svg             # Favicon & welcome avatar
+│   ├── logo.svg             # Favicon & welcome avatar
+│   └── screenshots/         # App screenshots (demo images)
 ├── src/
+│   ├── app/
+│   │   ├── api/chat/
+│   │   │   └── route.ts     # Next.js API route — 4-provider streaming SSE
+│   │   ├── globals.css      # Tailwind v3 directives
+│   │   ├── layout.tsx       # Root layout: fonts, metadata, FOUC script
+│   │   ├── page.tsx         # Home page (server component)
+│   │   └── not-found.tsx    # 404 page
 │   ├── components/
-│   │   ├── Header.jsx       # Navbar: logo, language, a11y controls
-│   │   ├── MessageList.jsx  # Virtualized list, welcome card, thinking animation
+│   │   ├── ChatInterface.jsx # Client component: state, hooks, composition
+│   │   ├── Header.jsx       # Kiran-header: logo, language, a11y controls
+│   │   ├── MessageList.jsx  # Scrollable list, welcome card, thinking animation
 │   │   ├── ChatMessage.jsx  # Bubbles, copy/listen actions, provider badge
 │   │   ├── InputBar.jsx     # Glassmorphism textarea, mic, send
 │   │   ├── SuggestedChips.jsx # Horizontal scroll, language-filtered
-│   │   └── KiranThinking.jsx # Two-phase animation: text → pulsing dots + lotus
+│   │   ├── KiranThinking.jsx # Two-phase animation: text → pulsing dots + lotus
+│   │   └── SkipNav.jsx      # Accessibility skip-navigation links
 │   ├── hooks/
 │   │   ├── useChat.js       # SSE streaming, abort, 1.2s min thinking timer
-│   │   ├── useTheme.js      # Dark mode via data-theme attr + localStorage
-│   │   ├── useAccessibility.js # High-contrast + font-size (3 steps)
+│   │   ├── useTheme.js      # Dark mode via .dark class + localStorage
+│   │   ├── useAccessibility.js # High-contrast (.hc) + font-size (.fs-* classes)
 │   │   └── useSpeech.js     # Web Speech API: TTS (EN/HI) + STT (EN/HI/AS)
-│   ├── utils/
-│   │   └── i18n.js          # Dictionary-based i18n (EN/HI/AS)
-│   ├── App.jsx              # Composes Header, MessageList, InputBar, Chips
-│   ├── main.jsx             # React 19 entry point
-│   └── index.css            # 1300+ lines: tokens, dark, HC, responsive, animations
-├── index.html               # Meta, fonts, favicon
-├── vercel.json              # SPA rewrite + /api/* proxy
-├── vite.config.js           # Dev proxy, env loading, Tailwind plugin
+│   ├── styles/
+│   │   └── tailwind.css     # 1300+ lines: tokens, dark/HC, responsive, animations
+│   └── utils/
+│       └── i18n.js          # Dictionary-based i18n (EN/HI/AS)
+├── tailwind.config.js       # Tailwind v3 content paths
+├── postcss.config.mjs       # PostCSS: Tailwind + Autoprefixer
+├── tsconfig.json            # TypeScript config
+├── next.config.mjs          # Next.js configuration
 └── package.json
 ```
 
@@ -274,7 +282,7 @@ kiran-chatbot/
 ```mermaid
 flowchart TD
     A["User Input (InputBar)"] --> B["useChat.sendMessage()"]
-    B -->|POST /api/chat| C["api/chat.js"]
+    B -->|POST /api/chat| C["route.ts (Next.js API Route)"]
     C --> D["Language Detection<br/>(Unicode ranges)"]
     D --> E["SYSTEM_PROMPT<br/>+ lang instruction"]
     E --> F["Try Provider 1<br/>NVIDIA Nemotron-3-Ultra"]
@@ -294,11 +302,10 @@ flowchart TD
 
 ### Rate Limiting
 
-```js
-// api/chat.js — in-memory sliding window
+```ts
+// route.ts — in-memory sliding window
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 const RATE_LIMIT_MAX = 10;            // requests per window per IP
-// Cleanup every 5 minutes
 ```
 
 ---
@@ -328,23 +335,21 @@ Suggested test targets:
 ### Vercel (Recommended)
 
 1. Push to GitHub
-2. Import project in Vercel
+2. Import project in Vercel (it auto-detects Next.js)
 3. Add Environment Variables (same as `.env.local`)
-4. Deploy — `vercel.json` handles:
-   - `/api/*` → serverless functions
-   - SPA fallback to `index.html`
+4. Deploy — Next.js App Router handles routing automatically
 
 ### Build Command
 
 ```bash
 npm run build
-# Output: dist/
+# Output: .next/
 ```
 
 ### Preview Production Build Locally
 
 ```bash
-npm run preview
+npm run start
 ```
 
 ---
@@ -375,8 +380,9 @@ npm run preview
 ### Code Style
 
 - **oxlint** for fast linting (React hooks, exports)
-- **Tailwind CSS v4** utility-first styling
+- **Tailwind CSS v3** via PostCSS plugin
 - **CSS custom properties** for theming (no JS-in-CSS)
+- **Next.js App Router** with server/client component separation
 - **Functional components** + hooks only
 
 ---

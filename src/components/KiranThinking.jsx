@@ -9,21 +9,21 @@ export default function KiranThinking({ fadingOut }) {
   }, []);
 
   return (
-    <div className={`message-row message-row-assistant ${fadingOut ? 'kiran-thinking-fadeout' : ''}`}>
-      <div className="message-avatar message-avatar-assistant">
-        <div className="kiran-thinking-lotus">
+    <div className={`msg-row assistant ${fadingOut ? 'fade-out' : ''}`}>
+      <div className="msg-avatar">
+        <div className="lotus-pulse">
           <span role="img" aria-label="lotus" style={{ fontSize: 18 }}>🌸</span>
         </div>
       </div>
-      <div className="kiran-thinking">
+      <div className="thinking-row">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {phase === 1 ? (
-            <span className="kiran-thinking-text">Kiran is thinking</span>
+            <span className="thinking-text">Kiran is thinking</span>
           ) : (
-            <div className="kiran-thinking-dots">
-              <span className="kiran-dot" />
-              <span className="kiran-dot" />
-              <span className="kiran-dot" />
+            <div className="thinking-dots">
+              <span className="thinking-dot" />
+              <span className="thinking-dot" />
+              <span className="thinking-dot" />
             </div>
           )}
         </div>

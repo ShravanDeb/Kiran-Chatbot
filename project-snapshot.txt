@@ -1,0 +1,481 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                  KIRAN — AI CHATBOT :: PROJECT SNAPSHOT             ║
+║                  "Because every child is special."                           ║
+║                  Generated: June 28, 2026                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ PROJECT IDENTITY                                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Name:                 Kiran — AI Chatbot
+  Tagline:              Because every child is special.
+  Developer:            Shravan Kumar Deb
+  College:              Assam Science and Technology University
+  Department:           Computer Science and Engineering
+  Programme:            B.Tech
+  Semester:             3rd
+  Enrollment Number:    2581203185      
+  Session:              2025-2029
+
+  NGO:                  Mrinaljyoti Rehabilitation Centre (MRC)
+  NGO Location:         Duliajan, Dibrugarh, Assam, Northeast India
+  NGO Tagline:          "Centre for Empowerment of Persons with Disabilities"
+
+  GitHub:               https://github.com/ShravanDeb/Kiran-Chatbot.git
+  Live Demo:            https://kiran-chatbot.vercel.app
+  License:              MIT (2026 Shravan Kumar Deb)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ CRITICAL FRAMING                                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  This project was NOT assigned by college.
+  This project was NOT commissioned by MRC.
+  The developer self-identified the need after personally observing a
+  communication gap between MRC and families of children with disabilities.
+  Built entirely on personal time to solve a real problem and deepen
+  practical full-stack + AI skills.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ TECH STACK                                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Frontend:             React 19, Vite 8, Tailwind CSS v4, Lucide React,
+                        React Markdown
+  Backend:              Node.js, Vercel Serverless Functions
+  AI Providers:         4-provider fallback chain (details below)
+  Deployment:           Vercel (free tier)
+  Linting:              oxlint
+  Fonts:                Nunito (Latin), Baloo 2 (Hindi), Baloo Da 2 (Assamese)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ AI PROVIDER DETAILS (fallback order: 1 → 2 → 3 → 4)                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  1. NVIDIA
+     Model:      nvidia/nemotron-3-ultra-550b-a55b
+     Base URL:   https://integrate.api.nvidia.com/v1
+     Max Tokens: 16384
+     Extra Body: { temperature: 1, top_p: 0.95,
+                   chat_template_kwargs: { enable_thinking: true },
+                   reasoning_budget: 16384 }
+     Env Var:    NVIDIA_API_KEY
+
+  2. Groq
+     Model:      llama-3.3-70b-versatile
+     Base URL:   https://api.groq.com/openai/v1
+     Env Var:    GROQ_API_KEY
+
+  3. OpenRouter
+     Model:      openai/gpt-4o-mini
+     Base URL:   https://openrouter.ai/api/v1
+     Headers:    { HTTP-Referer, X-Title: "Kiran Chatbot" }
+     Env Var:    OPENROUTER_API_KEY
+
+  4. Mistral
+     Model:      mistral-small-latest
+     Base URL:   https://api.mistral.ai/v1
+     Env Var:    MISTRAL_API_KEY
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ RATE LIMITING VALUES                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Sliding window:        60,000 ms  (1 minute)
+  Max requests:          10 per window per IP
+  Cleanup interval:      300,000 ms (5 minutes — stale entries purged)
+  Implementation:        In-memory Map (per-instance only)
+  Production note:       Replace with Vercel KV for global consistency
+  Response on exceed:    HTTP 429 with { error, limitReached: true }
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ENVIRONMENT VARIABLES (from .env.example)                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  NVIDIA_API_KEY=
+  GROQ_API_KEY=
+  OPENROUTER_API_KEY=
+  MISTRAL_API_KEY=
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DEPENDENCIES (from package.json)                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  name:     chatbot
+  version:  0.0.0
+  license:  MIT
+
+  Dependencies:
+    @google/generative-ai:    ^0.24.1
+    @tailwindcss/vite:        ^4.3.1
+    lucide-react:             ^1.21.0
+    react:                    ^19.2.7
+    react-dom:                ^19.2.7
+    react-markdown:           ^10.1.0
+    tailwindcss:              ^4.3.1
+
+  DevDependencies:
+    @types/react:             ^19.2.17
+    @types/react-dom:         ^19.2.3
+    @vitejs/plugin-react:     ^6.0.2
+    oxlint:                   ^1.69.0
+    vite:                     ^8.1.0
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ NPM SCRIPTS (from package.json)                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  dev:       vite
+  build:     vite build
+  lint:      oxlint
+  preview:   vite preview
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ SYSTEM PROMPT — KIRAN PERSONA (from api/chat.js)                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  **Identity:** You are "Kiran" (কিৰণ), which means "a ray of sunlight."
+  A warm, gentle, and endlessly curious little girl who helps families
+  understand children with disabilities and all the wonderful things about
+  Mrinaljyoti Rehabilitation Centre (MRC).
+
+  **Persona:** Talks like a curious 8-10 year old — simple words, short
+  sentences, full of wonder. Asks gentle questions back. Never sounds like
+  a doctor, textbook, or chatbot. Warm and encouraging like showing a friend
+  something wonderful.
+
+  **MRC Knowledge Base (comprehensive):**
+  - Founded 1999, Duliajan, Dibrugarh, Assam — voluntary non-profit
+  - ~7 staff, 140+ special children enrolled
+  - 11 services: Physiotherapy, Occupational Therapy, Speech Therapy,
+    Special Education, School Readiness Program, Open School Coaching,
+    Aids & Appliance Distribution Camps, Teacher Training Programs,
+    Awareness Programs on Legal Rights of PwDs, Counseling, Mother's Training
+  - 8 projects: Project DISHA, Pushpdalum (Vocational Unit), Special Olympic
+    Bharat Sports Centre, IDCYD, IOCL Collaboration, Project Oil Sakshyam,
+    Jyotiniwas Children Home, RAISE-NE
+  - 20+ partners: Oil India Ltd, NEEPCO, AGCL, IOCL, NHPC, National Trust,
+    Liliane Fonds, CBM, Light for the World, etc.
+  - Legal: Societies Registration Act, RPwD Act 2016, National Trust Act,
+    FCRA, 12A, 80G, FSSAI, UDYAM
+  - Achievements: Detected 5,036 PwDs, Chief Minister's Best Community
+    Service Award
+  - Contact: +91 9954 485 197, mrinaljyoti@yahoo.co.in, mrinaljyotiassam.org
+
+  **Language Rules:** Respond in EXACT same language/script as user.
+  Devanagari → Hindi, Assamese script → Assamese, Latin → English.
+  Never mix. Language preference override accepted.
+
+  **Behavior Rules:** 8-10 year old persona, 3-6 sentences, NO medical
+  diagnosis, "Every child is special" for hiding, Childline 1098 for
+  emergencies, stay on topic, markdown allowed.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ CSS DESIGN TOKENS (from src/index.css :root)                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  --color-maroon:             #7A2433
+  --color-maroon-light:       rgba(122, 36, 51, 0.12)
+  --color-maroon-mid:         rgba(122, 36, 51, 0.25)
+  --color-maroon-dark:        #5C1A26
+  --color-cream:              #F7F2EA
+  --color-cream-glass:        rgba(247, 242, 234, 0.65)
+  --color-cream-glass-light:  rgba(247, 242, 234, 0.35)
+  --blur-md:                  blur(14px)
+  --blur-lg:                  blur(24px)
+  --radius-pill:              999px
+  --radius-card:              20px
+  --font-latin:               'Nunito', sans-serif
+  --font-hindi:               'Baloo 2', sans-serif
+  --font-assamese:            'Baloo Da 2', sans-serif
+  --transition-base:          all 150ms ease
+  --color-bg:                 #F7F2EA
+  --color-bg-secondary:       #F0EAE0
+  --color-text-primary:       #2A1F1A
+  --color-text-secondary:     #6F6259
+  --color-text-muted:         #9C8F82
+  --color-surface:            #EDE6DA
+  --focus-ring:               0 0 0 2px var(--color-maroon)
+
+  Dark mode background:       #0C0809
+  Dark mode user bubble:      #A83348
+  Dark mode glass:            rgba(255,255,255,0.04) / border rgba(255,255,255,0.09)
+  High contrast light:        white bg / black borders / no blur
+  High contrast dark:         black bg / white borders / no blur
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ MEDIA QUERY BREAKPOINTS (from src/index.css)                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  @media (max-width: 767px)   Mobile/tablet — navbar 56px, tagline hidden,
+                              title 1.2rem, reduced message padding,
+                              send/voice buttons 44px, chip padding reduced.
+
+  @media (min-width: 768px)   Desktop — welcome avatar 145px.
+
+  @media (max-width: 419px)   Narrow mobile — hide all .nav-icon-btn except
+                              last child (only theme toggle + language pill
+                              remain visible).
+
+  @media (prefers-reduced-motion: reduce)   Disable all animations.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ @keyframes ANIMATION NAMES (from src/index.css)                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  1. kiranThinkingFadeIn    opacity 0 → 1 (400ms, ease-out)
+  2. kiranThinkingFadeOut   opacity 1 → 0 (200ms, ease-out)
+  3. kiranPulse             scale(1) opacity 0.7 ↔ scale(1.18) opacity 1
+                            (900ms, ease-in-out, infinite)
+  4. kiranDot               translateY(0) opacity 0.35 ↔ translateY(-6px)
+                            opacity 1 (900ms, ease-in-out, infinite, staggered
+                            delays: 0ms / 150ms / 300ms)
+  5. fadeIn                 opacity 0 → 1
+  6. fadeSlideIn            opacity 0 + translateY(4px) → opacity 1 +
+                            translateY(0) (200ms, ease-out)
+  7. pulse                  opacity 1 ↔ 0.5 (1.5s, infinite)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ COMPLETE TRANSLATION DICTIONARY (from src/utils/i18n.js :: 21 keys × 3 langs)│
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Languages:            en (English), hi (Hindi), as (Assamese)
+
+  Key                   English                               Hindi (Devanagari)              Assamese (Assamese script)
+  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  header.title          Kiran                                 किरण                           কিৰণ
+  header.tagline        Because every child is special.       क्योंकि हर बच्चा खास है।       কাৰণ প্ৰতিটো শিশু বিশেষ।
+  input.placeholder     Ask a question...                     कोई सवाल पूछें...              এটা প্ৰশ্ন সুধিব...
+  input.disclaimer      Kiran can make mistakes...            किरण से गलतियाँ हो सकती हैं...   কিৰণৰ ভুল হ'ব পাৰে...
+  button.send           Send                                  भेजें                          পঠাওক
+  button.newChat        New chat                              नई बातचीत                      নতুন বাৰ্তালাপ
+  button.copied         Copied!                               कॉपी हो गया!                   কপি হ'ল!
+  button.copy           Copy                                  कॉपी                           কপি
+  welcome.title         I'm Kiran 🌸                          मैं किरण हूँ 🌸                 মই কিৰণ 🌸
+  welcome.subtitle      Ask me anything about MRC...          MRC के बारे में...              MRC ৰ বিষয়ে...
+  chip.cerebralPalsy    What is Cerebral Palsy?               सेरेब्रल पाल्सी क्या है?        চেৰিব্ৰেল পালচি কি?
+  chip.notSpeaking      My child isn't speaking yet           मेरा बच्चा अभी बोल नहीं रहा     মোৰ সন্তানে এতিয়াও কথা কোৱা নাই
+  chip.fee              Is there a fee for services?          क्या सेवाओं के लिए कोई शुल्क?    সেৱাৰ বাবে কোনো মাচুল?
+  chip.enroll           How do I enroll my child?             मैं अपने बच्चे का नामांकन?      মই মোৰ সন্তানক কেনেকৈ নামভৰ্তি?
+  chip.autism           What are signs of Autism?             ऑटिज़्म के लक्षण क्या हैं?       অটিজমৰ লক্ষণ কি কি?
+  chip.hiding           People say I should hide my child     लोग कहते हैं मुझे...            মানুহে কয় মই...
+  error.generic         Something went wrong...               कुछ गलत हो गया...               কিবা ভুল হ'ল...
+  error.network         Unable to connect...                  कनेक्ट नहीं हो पा रहा...         সংযোগ কৰিব পৰা নাই...
+  error.limitReached    Chatbot limit reached...              चैटबॉट की सीमा समाप्त...        চাটবটৰ সীমা শেষ...
+  aria.sendButton       Send message                          संदेश भेजें                    বাৰ্তা পঠাওক
+  aria.newChat          New chat                              नई बातचीत                      নতুন বাৰ্তালাপ
+  aria.toggleTheme      Toggle dark/light mode                डार्क/लाइट मोड बदलें           ডাৰ্ক/লাইট মোড সলনি
+  aria.copyMessage      Copy message                          संदेश कॉपी करें                বাৰ্তা কপি কৰক
+
+  t() function:         Looks up key in translations object; falls back to
+                        English; falls back to the key string itself.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ LANGUAGE DETECTION FUNCTION (from src/utils/i18n.js)                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  function detectLang(text) {
+    if (/[\u0980-\u09FF]/.test(text)) return 'as';   // Assamese script
+    if (/[\u0900-\u097F]/.test(text)) return 'hi';   // Devanagari (Hindi)
+    return 'en';                                      // Default: English
+  }
+
+  (Used in SuggestedChips.jsx to filter chip suggestions based on the
+  character script of the user's typed input.)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT TREE (from src/App.jsx return)                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  <div className="app">
+    <Header
+      language         = {language}
+      onLanguageChange = {setLanguage}
+      isDark           = {isDark}
+      onToggleTheme    = {toggleTheme}
+      onNewChat        = {clearChat}
+      highContrast     = {highContrast}
+      onToggleHighContrast = {toggleHighContrast}
+      fontSize         = {fontSize}
+      onCycleFontSize  = {cycleFontSize}
+    />
+    <MessageList
+      messages   = {messages}
+      isLoading  = {isLoading}
+      isStreaming = {isStreaming}
+      language   = {language}
+      isThinking = {isThinking}
+    />
+    <div className="input-area">
+      {inputText.trim() && (
+        <SuggestedChips
+          language   = {language}
+          onChipClick = {handleSend}
+          filterText = {inputText}
+        />
+      )}
+      <InputBar
+        language     = {language}
+        onSend       = {handleSend}
+        disabled     = {isLoading || isStreaming}
+        onInputChange = {setInputText}
+      />
+    </div>
+  </div>
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENTS (from src/components/)                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  1.  ChatMessage.jsx       — Renders individual message bubble with avatar,
+                              copy/listen actions, provider label
+  2.  Header.jsx            — Navbar: brand title, tagline, language pill,
+                              font-size/contrast/theme toggle buttons
+  3.  InputBar.jsx          — Glassmorphism input pill, send button, mic,
+                              disclaimer text
+  4.  KiranThinking.jsx     — Two-phase thinking animation (🌸 emoji →
+                              bouncing dots), minimum 1.2s display
+  5.  MessageList.jsx       — Virtual message container with welcome card,
+                              KiranThinking integration, auto-scroll
+  6.  SuggestedChips.jsx    — Horizontal scrollable chip strip, filtered
+                              by language + input text
+
+  Total: 6 component files
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ CUSTOM HOOKS (from src/hooks/)                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  1.  useAccessibility.js  — High contrast toggle, font size cycling (3 steps:
+                             15/18/21px), localStorage persistence
+  2.  useChat.js           — SSE stream parser, error handling with
+                             limitReached flag, isThinking (1.2s min timer)
+  3.  useSpeech.js         — TTS (Web Speech API, EN/HI Neural, AS blocked)
+                             + STT (fresh recognition instance per start)
+  4.  useTheme.js          — Dark/light mode via data-theme attribute,
+                             localStorage persistence
+
+  Total: 4 hook files
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ VITE CONFIG (full file — vite.config.js)                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  import { defineConfig, loadEnv } from 'vite'
+  import react from '@vitejs/plugin-react'
+  import tailwindcss from '@tailwindcss/vite'
+
+  // Custom Vite plugin to handle Vercel serverless functions locally
+  function vercelApiProxy() {
+    return {
+      name: 'vercel-api-proxy',
+      configureServer(server) {
+        server.middlewares.use(async (req, res, next) => {
+          if (req.url === '/api/chat' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => { body += chunk.toString(); });
+            req.on('end', async () => {
+              try {
+                req.body = JSON.parse(body);
+                const handler = await import('./api/chat.js');
+                await handler.default(req, res);
+              } catch (err) {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: err.message }));
+              }
+            });
+            return;
+          }
+          next();
+        });
+      }
+    };
+  }
+
+  export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '')
+    process.env.OPENROUTER_API_KEY = env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+    process.env.GROQ_API_KEY       = env.GROQ_API_KEY       || process.env.GROQ_API_KEY;
+    process.env.MISTRAL_API_KEY    = env.MISTRAL_API_KEY    || process.env.MISTRAL_API_KEY;
+    process.env.NVIDIA_API_KEY     = env.NVIDIA_API_KEY     || process.env.NVIDIA_API_KEY;
+
+    return {
+      plugins: [ react(), tailwindcss(), vercelApiProxy() ],
+    }
+  })
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ VERCEL CONFIG (full file — vercel.json)                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  {
+    "rewrites": [
+      { "source": "/api/(.*)", "destination": "/api/$1" },
+      { "source": "/(.*)", "destination": "/index.html" }
+    ]
+  }
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ FEATURES — COMPLETE LIST                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Trilingual — English, Hindi, Assamese
+   2. Auto language detection via Unicode script ranges
+      (Devanagari \u0900-\u097F, Assamese \u0980-\u09FF)
+   3. 4-provider AI fallback chain (NVIDIA → Groq → OpenRouter → Mistral)
+   4. SSE token-by-token streaming with provider name broadcast
+   5. KiranThinking animation with 1.2s minimum display timer
+   6. Glassmorphism UI — cream/ink palette, maroon accent (#7A2433)
+   7. Dark mode — warm near-black (#0C0809), maroon radial gradient
+   8. High contrast mode — independent overlay, works on light or dark
+   9. Font scaling — 3 steps (15px / 18px / 21px) via localStorage
+  10. TTS — Web Speech API, English (en-IN) / Hindi (hi-IN), Neural voice
+  11. STT — Speech recognition with continuous mode, EN/HI/AS
+  12. Rate limiting — in-memory sliding window, 10 req/min per IP
+  13. Full accessibility — ARIA labels, focus-visible, reduced motion
+  14. Responsive design — 3 breakpoints (767px / 639px / 419px)
+  15. Suggested question chips — filtered by language + input text
+  16. Copy message to clipboard — with Copied! confirmation
+  17. localStorage persistence — theme, font size, high contrast
+  18. No database — stateless, privacy-first architecture
+  19. Zero cost deployment — Vercel free tier, no paid services
+  20. Per-IP rate limiting — HTTP 429 with limitReached flag
+  21. Nunito font (Latin) / Baloo 2 (Hindi) / Baloo Da 2 (Assamese)
+  22. Navbar CSS Grid layout — 1fr auto 1fr, centered brand guaranteed
+  23. Button ON/OFF visual states — .is-active class, filled maroon bg
+  24. Error i18n — generic, network, and limitReached messages translated
+  25. Logo SVG avatar — favicon + welcome card + chat message avatars
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ADDITIONAL FILE REFERENCES                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Key source files:
+    api/chat.js                  — Backend handler (380 lines)
+    src/App.jsx                  — Root component (59 lines)
+    src/index.css                — All styles (1338 lines)
+    src/utils/i18n.js            — Translations (151 lines)
+    src/hooks/useChat.js         — SSE + error handling
+    src/hooks/useAccessibility.js — High contrast + font size
+    src/hooks/useSpeech.js       — TTS + STT
+    src/hooks/useTheme.js        — Dark mode
+    src/components/Header.jsx    — Navbar
+    src/components/MessageList.jsx — Message container + welcome
+    src/components/ChatMessage.jsx — Bubble + actions
+    src/components/InputBar.jsx  — Input area
+    src/components/KiranThinking.jsx — Thinking animation
+    src/components/SuggestedChips.jsx — Chips
+    public/logo.svg              — Logo / favicon / avatar
+    public/screenshots/          — 6 app screenshots
+    vite.config.js               — Vite config (51 lines)
+    vercel.json                  — Vercel rewrites (6 lines)
+    .env.example                 — Template env vars
+    package.json                 — Project metadata
+    README.md                    — 401 lines, 15 sections
+    PROJECT_REPORT.md            — 12,783 words, 9 chapters
+    LICENSE                      — MIT (2026 Shravan Kumar Deb)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ END OF PROJECT SNAPSHOT                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘

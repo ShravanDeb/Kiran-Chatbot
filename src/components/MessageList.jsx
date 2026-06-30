@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import KiranThinking from './KiranThinking';
 import { t } from '../utils/i18n';
@@ -39,6 +40,11 @@ export default function MessageList({
     setUserScrolledUp(!isNearBottom);
   };
 
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setUserScrolledUp(false);
+  };
+
   const isEmpty = messages.length === 0;
 
   const messagesToShow = showThinking
@@ -47,11 +53,14 @@ export default function MessageList({
 
   return (
     <div
-      className="message-list"
+      className="msg-list"
       ref={containerRef}
       onScroll={handleScroll}
+      role="log"
+      aria-live="polite"
+      aria-label="Chat messages"
     >
-      <div className="message-list-inner">
+      <div className="msg-list-inner">
         {isEmpty ? (
           <div className="welcome-card">
             <div className="welcome-card-inner">
@@ -78,6 +87,16 @@ export default function MessageList({
         )}
         <div ref={bottomRef} className="scroll-anchor" />
       </div>
+
+      {userScrolledUp && (
+        <button
+          className="scroll-btn"
+          onClick={scrollToBottom}
+          aria-label="Scroll to bottom"
+        >
+          <ChevronDown size={18} />
+        </button>
+      )}
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const FONT_KEY = 'kiran-font-size';
-const HC_KEY = 'kiran-high-contrast';
+const FONT_KEY = 'kiran-fs';
+const HC_KEY = 'kiran-hc';
 
-const FONT_SIZES = ['15px', '18px', '21px'];
+const FONT_CLASSES = ['fs-1', 'fs-2', 'fs-3'];
 const FONT_LABELS = ['normal', 'large', 'xlarge'];
 
 export function useAccessibility() {
@@ -25,17 +25,22 @@ export function useAccessibility() {
   useEffect(() => {
     const root = document.documentElement;
     if (highContrast) {
-      root.classList.add('high-contrast');
+      root.classList.add('hc');
     } else {
-      root.classList.remove('high-contrast');
+      root.classList.remove('hc');
     }
     localStorage.setItem(HC_KEY, String(highContrast));
   }, [highContrast]);
 
   useEffect(() => {
+    const root = document.documentElement;
+    FONT_CLASSES.forEach(c => root.classList.remove(c));
     const idx = FONT_LABELS.indexOf(fontSize);
-    const px = idx >= 0 ? FONT_SIZES[idx] : '15px';
-    document.documentElement.style.fontSize = px;
+    if (idx >= 0) {
+      root.classList.add(FONT_CLASSES[idx]);
+    } else {
+      root.classList.add('fs-1');
+    }
     localStorage.setItem(FONT_KEY, fontSize);
   }, [fontSize]);
 

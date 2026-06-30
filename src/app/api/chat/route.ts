@@ -1,3 +1,5 @@
+import { NextRequest, NextResponse } from 'next/server';
+
 const SYSTEM_PROMPT = `You are "Kiran" (কিৰণ), which means "a ray of sunlight." You are a warm, gentle, and endlessly curious little girl who helps families understand children with disabilities and all the wonderful things about **Mrinaljyoti Rehabilitation Centre (MRC)**.
 
 You talk like a curious, kind-hearted child — simple words, short sentences, full of wonder. You ask gentle questions back because you're genuinely curious about the person you're talking to. You never sound like a doctor, a textbook, or a chatbot. You sound like a bright little girl who loves learning about people and wants to share everything she knows about MRC.
@@ -197,7 +199,39 @@ const PROVIDERS = [
   },
 ];
 
-async function streamOpenAICompatible(res, provider, messages, apiKey) {
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 10;
+const ipHits = new Map<string, number[]>();
+
+function getClientIP(req: NextRequest): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || req.headers.get('x-real-ip')
+    || '127.0.0.1';
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const timestamps = ipHits.get(ip) || [];
+  const recent = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  ipHits.set(ip, [...recent, now]);
+  return recent.length < RATE_LIMIT_MAX;
+}
+
+function shouldRetry(err: any): boolean {
+  if (err.status === 429) return true;
+  if (err.status >= 500 && err.status < 600) return true;
+  const msg = (err.message || '').toLowerCase();
+  if (msg.includes('rate limit') || msg.includes('rate_limit')) return true;
+  if (msg.includes('internal server error') || msg.includes('service unavailable')) return true;
+  if (msg.includes('econnrefused') || msg.includes('enotfound') || msg.includes('timeout')) return true;
+  return false;
+}
+
+async function tryProvider(
+  provider: typeof PROVIDERS[0],
+  messages: { role: string; content: string }[],
+  apiKey: string,
+): Promise<ReadableStream> {
   const response = await fetch(`${provider.baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -217,117 +251,79 @@ async function streamOpenAICompatible(res, provider, messages, apiKey) {
 
   if (!response.ok) {
     const text = await response.text();
-    const err = new Error(`${provider.name} API error: ${response.status} - ${text}`);
+    const err = new Error(`${provider.name} API error: ${response.status} - ${text}`) as any;
     err.status = response.status;
     throw err;
   }
 
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const encoder = new TextEncoder();
 
-  res.write(`data: ${JSON.stringify({ provider: provider.name })}\n\n`);
+  const stream = new ReadableStream({
+    async start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ provider: provider.name })}\n\n`));
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder('utf-8');
-  let buffer = '';
+      try {
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop() || '';
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
 
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        const data = line.slice(6);
-        if (data === '[DONE]') {
-          res.write('data: [DONE]\n\n');
-          continue;
-        }
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              if (data === '[DONE]') {
+                controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+                continue;
+              }
 
-        try {
-          const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta;
-          const content = delta?.content;
-          if (content) {
-            res.write(`data: ${JSON.stringify({ text: content })}\n\n`);
+              try {
+                const parsed = JSON.parse(data);
+                const delta = parsed.choices?.[0]?.delta;
+                const content = delta?.content;
+                if (content) {
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: content })}\n\n`));
+                }
+              } catch {
+                // skip
+              }
+            }
           }
-        } catch {
-          // skip
         }
+
+        controller.close();
+      } catch (err) {
+        controller.error(err);
       }
-    }
-  }
+    },
+  });
 
-  res.write('data: [DONE]\n\n');
-  res.end();
+  return stream;
 }
 
-function shouldRetry(err) {
-  if (err.status === 429) return true;
-  if (err.status >= 500 && err.status < 600) return true;
-  const msg = err.message?.toLowerCase() || '';
-  if (msg.includes('rate limit') || msg.includes('rate_limit')) return true;
-  if (msg.includes('internal server error') || msg.includes('service unavailable')) return true;
-  if (msg.includes('econnrefused') || msg.includes('enotfound') || msg.includes('timeout')) return true;
-  return false;
-}
-
-// Per-IP rate limiter (in-memory sliding window).
-// For production across multiple serverless instances, replace with Vercel KV or similar.
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
-const RATE_LIMIT_MAX = 10;            // max requests per window per IP
-const ipHits = new Map();
-
-// Clean up stale entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, timestamps] of ipHits) {
-    const recent = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
-    if (recent.length === 0) ipHits.delete(ip);
-    else ipHits.set(ip, recent);
-  }
-}, 300_000);
-
-function getClientIP(req) {
-  return req.headers['x-forwarded-for']?.split(',')[0]?.trim()
-    || req.headers['x-real-ip']
-    || req.socket?.remoteAddress
-    || '127.0.0.1';
-}
-
-function checkRateLimit(ip) {
-  const now = Date.now();
-  const timestamps = ipHits.get(ip) || [];
-  const recent = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
-  ipHits.set(ip, [...recent, now]);
-  return recent.length < RATE_LIMIT_MAX;
-}
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function POST(req: NextRequest) {
   const ip = getClientIP(req);
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({
-      error: 'Too many requests. Please wait a moment and try again.',
-      limitReached: true,
-    });
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment and try again.', limitReached: true },
+      { status: 429 },
+    );
   }
 
-  const { messages, language: prefLanguage } = req.body;
+  const body = await req.json();
+  const { messages, language: prefLanguage } = body;
+
   if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Invalid messages format' });
+    return NextResponse.json({ error: 'Invalid messages format' }, { status: 400 });
   }
 
-  // Auto-detect language from the user's last message if no explicit preference
-  const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
+  const lastUserMsg = messages.filter((m: any) => m.role === 'user').pop()?.content || '';
   let detectedLang = prefLanguage || 'en';
   if (!prefLanguage || prefLanguage === 'en') {
     if (/[\u0900-\u097F]/.test(lastUserMsg)) {
@@ -350,7 +346,7 @@ export default async function handler(req, res) {
     ...messages,
   ];
 
-  const errors = [];
+  const errors: any[] = [];
 
   for (const provider of PROVIDERS) {
     const apiKey = process.env[provider.keyEnv];
@@ -360,21 +356,27 @@ export default async function handler(req, res) {
     }
 
     try {
-      await streamOpenAICompatible(res, provider, chatHistory, apiKey);
-      return;
-    } catch (err) {
+      const stream = await tryProvider(provider, chatHistory, apiKey);
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      });
+    } catch (err: any) {
       const retry = shouldRetry(err);
       errors.push({ provider: provider.name, status: err.status, message: err.message, retry });
       if (!retry) break;
     }
   }
 
-  if (!res.headersSent) {
-    return res.status(503).json({
+  return NextResponse.json(
+    {
       error: 'All AI providers are currently unavailable. Please try again later.',
-      details: errors.map(e => `${e.provider}: ${e.reason || e.message}`),
+      details: errors.map((e: any) => `${e.provider}: ${e.reason || e.message}`),
       limitReached: true,
-    });
-  }
-  res.end();
+    },
+    { status: 503 },
+  );
 }

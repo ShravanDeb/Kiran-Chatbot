@@ -50,11 +50,11 @@ export default function InputBar({ language, onSend, disabled, onInputChange }) 
   };
 
   return (
-    <div className="input-bar-wrapper">
-      <div className="input-bar">
+    <div className="input-pill-wrapper">
+      <div className="input-pill">
         <textarea
           ref={textareaRef}
-          className="input-textarea"
+          className="chat-textarea"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -65,7 +65,7 @@ export default function InputBar({ language, onSend, disabled, onInputChange }) 
         />
         {hasSpeechRecognition && (
           <button
-            className={`voice-btn ${isListening ? 'listening' : ''}`}
+            className={`mic-btn ${isListening ? 'listening' : ''}`}
             onClick={handleMicClick}
             disabled={disabled}
             aria-label={isListening ? "Stop listening" : "Start voice input"}
@@ -83,7 +83,7 @@ export default function InputBar({ language, onSend, disabled, onInputChange }) 
           <SendHorizontal size={18} />
         </button>
       </div>
-      <p className="input-disclaimer">
+      <p className="disclaimer">
         {t('input.disclaimer', language)}
       </p>
     </div>
