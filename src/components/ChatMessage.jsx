@@ -59,13 +59,14 @@ export default function ChatMessage({ message, language }) {
           </div>
         )}
 
-        {!isUser && message.content && (
+        {!isUser && (
           <div className="msg-actions">
             <button
               className={`action-pill ${isCurrentlySpeaking ? 'active' : ''}`}
               onClick={handleListen}
               aria-label="Listen to message"
               title="Listen to message"
+              disabled={!message.content}
             >
               {isCurrentlySpeaking ? <VolumeX size={14} /> : <Volume2 size={14} />}
               <span>Listen</span>
@@ -75,6 +76,7 @@ export default function ChatMessage({ message, language }) {
               onClick={handleCopy}
               aria-label={t('aria.copyMessage', language)}
               title={copied ? t('button.copied', language) : t('button.copy', language)}
+              disabled={!message.content}
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
               <span>{copied ? t('button.copied', language) : t('button.copy', language)}</span>
