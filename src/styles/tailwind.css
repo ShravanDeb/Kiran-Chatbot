@@ -1016,7 +1016,7 @@ a:focus-visible {
 
   .chat-layout { padding-top: 0; }
   .msg-list {
-    padding: 0.4rem 0.5rem calc(var(--input-area-height, 140px) + 16px);
+    padding: 0.4rem 0.5rem;
     display: flex;
     flex-direction: column;
   }
@@ -1025,7 +1025,14 @@ a:focus-visible {
     flex-direction: column;
     min-height: 100%;
   }
-  .scroll-anchor { height: 1px; scroll-margin-bottom: calc(var(--input-area-height, 140px) + 16px); }
+  /* Real content height (not container padding) so the bar's exact live
+     height always carves out genuinely reachable scroll space — padding-
+     bottom on an overflow:auto container with a min-height:100% flex child
+     is unreliable on mobile Safari and was why the previous attempt still failed. */
+  .scroll-anchor {
+    height: calc(var(--input-area-height, 140px) + 16px);
+    scroll-margin-bottom: 10px;
+  }
   .welcome-card { padding: 0.5rem 0.5rem; }
   .welcome-card-inner { padding: 1.5rem 1.2rem; width: 92%; }
   .welcome-avatar img { width: 64px; height: 64px; }
