@@ -1014,7 +1014,7 @@ a:focus-visible {
 
   .chat-layout { padding-top: 100px; }
   .msg-list {
-    padding: 0.4rem 0.5rem 90px;
+    padding: 0.4rem 0.5rem 120px;
     display: flex;
     flex-direction: column;
   }

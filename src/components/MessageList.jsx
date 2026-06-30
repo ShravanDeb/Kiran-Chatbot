@@ -30,7 +30,7 @@ export default function MessageList({
   const hasNewMessage = messages.length > prevMsgLenRef.current;
   useEffect(() => {
     if (!userScrolledUp && bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: hasNewMessage ? 'smooth' : 'auto' });
+      bottomRef.current.scrollIntoView({ behavior: hasNewMessage ? 'smooth' : 'auto', block: 'end' });
     }
     prevMsgLenRef.current = messages.length;
   }, [messages, isLoading, userScrolledUp, hasNewMessage]);
@@ -44,7 +44,7 @@ export default function MessageList({
   };
 
   const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     setUserScrolledUp(false);
   };
 
