@@ -1012,7 +1012,7 @@ a:focus-visible {
   .icon-btn { width: 30px; height: 30px; }
   .new-chat-btn { width: 32px; height: 32px; }
 
-  .chat-layout { padding-top: 100px; }
+  .chat-layout { padding-top: 0; }
   .msg-list {
     padding: 0.4rem 0.5rem 120px;
     display: flex;
