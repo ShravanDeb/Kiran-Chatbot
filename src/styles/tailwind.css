@@ -1016,7 +1016,7 @@ a:focus-visible {
 
   .chat-layout { padding-top: 0; }
   .msg-list {
-    padding: 0.4rem 0.5rem 180px;
+    padding: 0.4rem 0.5rem;
     display: flex;
     flex-direction: column;
   }
@@ -1025,6 +1025,7 @@ a:focus-visible {
     flex-direction: column;
     min-height: 100%;
   }
+  .scroll-anchor { height: 200px; }
   .welcome-card { padding: 0.5rem 0.5rem; }
   .welcome-card-inner { padding: 1.5rem 1.2rem; width: 92%; }
   .welcome-avatar img { width: 64px; height: 64px; }
