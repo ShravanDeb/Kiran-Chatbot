@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from './Header';
 import MessageList from './MessageList';
 import InputBar from './InputBar';
@@ -13,6 +13,7 @@ import { SkipNavLink, SkipNavContent } from './SkipNav';
 export default function ChatInterface() {
   const [language, setLanguage] = useState('en');
   const [inputText, setInputText] = useState('');
+  const inputAreaRef = useRef(null);
   const { isDark, toggleTheme } = useTheme();
   const { messages, isLoading, isStreaming, isThinking, sendMessage, clearChat } = useChat(language);
   const { highContrast, toggleHighContrast, fontSize, cycleFontSize } = useAccessibility();
@@ -20,6 +21,17 @@ export default function ChatInterface() {
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
+
+  useEffect(() => {
+    const el = inputAreaRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const h = entry.contentBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
+      document.documentElement.style.setProperty('--input-area-height', `${h}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const handleSend = (text) => {
     sendMessage(text);
@@ -48,7 +60,7 @@ export default function ChatInterface() {
         language={language}
         isThinking={isThinking}
       />
-      <div className="input-area">
+      <div className="input-area" ref={inputAreaRef}>
         {inputText.trim() && (
           <SuggestedChips language={language} onChipClick={handleSend} filterText={inputText} />
         )}
