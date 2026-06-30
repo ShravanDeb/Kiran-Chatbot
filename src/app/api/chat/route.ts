@@ -199,6 +199,13 @@ const PROVIDERS = [
   },
 ];
 
+function getProviders(lang: string): typeof PROVIDERS {
+  if (lang === 'as') {
+    return [PROVIDERS[1], PROVIDERS[2], PROVIDERS[0], PROVIDERS[3]];
+  }
+  return PROVIDERS;
+}
+
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 10;
 const ipHits = new Map<string, number[]>();
@@ -348,7 +355,7 @@ export async function POST(req: NextRequest) {
 
   const errors: any[] = [];
 
-  for (const provider of PROVIDERS) {
+  for (const provider of getProviders(detectedLang)) {
     const apiKey = process.env[provider.keyEnv];
     if (!apiKey) {
       errors.push({ provider: provider.name, reason: 'No API key configured' });
